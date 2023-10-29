@@ -9,7 +9,6 @@ import (
 	"log"
 
 	"gorm.io/gorm"
-	// "gorm.io/driver/mysql"
 )
 
 // Структура сущности
@@ -20,7 +19,7 @@ type Product struct {
 
 // Переменные
 
-var DB *gorm.DB
+// var DB *gorm.DB
 
 var product Product
 var products []Product
@@ -40,9 +39,9 @@ func ProductCreate() {
 	DB.Create(&entity)
 }
 
-// Список всех продуктов
-func ProductList() {
+// Список всех записей
+func ProductList() []Product {
 	log.Println("ProductList")
-	result := DB.Find(&products)
-	log.Println(result.RowsAffected)
+	DB.Find(&products)
+	return products
 }
