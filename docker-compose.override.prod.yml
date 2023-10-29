@@ -1,0 +1,41 @@
+version: '3.9'
+
+volumes:
+  letsencrypt:
+
+services:
+
+  app-main:
+    labels:
+      - "traefik.http.routers.app-main-secure.entrypoints=websecure"
+      - "traefik.http.routers.app-main-secure.tls.certresolver=myresolver"
+      - "traefik.http.routers.app-main-secure.rule=Host(`${LOCAL_HOSTNAME_MAIN}`)"
+
+  # Web interface form mysql
+  phpmyadmin:
+    labels:
+      - "traefik.http.routers.phpmyadmin-secure.entrypoints=websecure"
+      - "traefik.http.routers.phpmyadmin-secure.tls.certresolver=myresolver"
+      - "traefik.http.routers.phpmyadmin-secure.rule=Host(`${LOCAL_HOSTNAME_PMA}`)"
+
+  #
+  traefik:
+    command:
+      - --log.level=ERROR
+      - --api.insecure=true
+      - --api.dashboard=true
+      - --providers.docker=true
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --certificatesresolvers.myresolver.acme.httpchallenge=true
+      - --certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web
+      - --certificatesresolvers.myresolver.acme.email=michael.kultyshev@gmail.com
+      - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
+    ports:
+      - "443:443"
+    labels:
+      - "traefik.http.routers.traefik-secure.entrypoints=websecure"
+      - "traefik.http.routers.traefik-secure.tls.certresolver=myresolver"
+      - "traefik.http.routers.traefik-secure.rule=Host(`${LOCAL_HOSTNAME_TRAEFIK}`)"
+    volumes:
+      - "letsencrypt:/letsencrypt"
