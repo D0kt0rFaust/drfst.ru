@@ -12,10 +12,6 @@ import (
 	"gorm.io/driver/mysql"
 )
 
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-    w.Write([]byte("<h1>Hello World!</h1>"))
-}
-
 var DB *gorm.DB
 
 func init() {
@@ -41,14 +37,14 @@ func init() {
 
     // Передаём подключение в модуль models
     models.DB = DB
+
+    // Мигрируем таблички
+    models.OrderItemAutoMigrate()
+    models.ProductAutoMigrate()
 }
 
 func main() {
-    models.ProductAutoMigrate()
-	models.ProductCreate()
-    models.ProductList()
-
-	port := os.Getenv("PORT")
+    port := os.Getenv("PORT")
     if port == "" {
         port = "3000"
     }
@@ -56,5 +52,35 @@ func main() {
     mux := http.NewServeMux()
 
     mux.HandleFunc("/", indexHandler)
+    mux.HandleFunc("/createOrderItem", createOrderItemHandler)
+    mux.HandleFunc("/createProduct", createProductHandler)
+
     http.ListenAndServe(":"+port, mux)
+}
+
+// Главная страница
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+    // Выводим список элементов заказа
+    orderItemList := models.OrderItemList()
+    w.Write([]byte("Список элементов заказа\r\n\r\n"))
+    for _, value := range orderItemList {
+        w.Write([]byte(value.Title + "\r\n"))
+    }
+    
+    // Выводим список продуктов
+    productList := models.ProductList()
+    w.Write([]byte("\r\nСписок типовых продуктов\r\n\r\n"))
+    for _, value := range productList {
+        w.Write([]byte(value.Title + "\r\n"))
+    }
+}
+
+// Создание элемента заказа
+func createOrderItemHandler(w http.ResponseWriter, r *http.Request) {
+    models.OrderItemCreate("1234")
+}
+
+// Создание типового продукта
+func createProductHandler(w http.ResponseWriter, r *http.Request) {
+    models.ProductCreate()
 }
