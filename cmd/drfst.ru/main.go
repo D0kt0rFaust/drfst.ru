@@ -39,8 +39,8 @@ func init() {
     models.DB = DB
 
     // Мигрируем таблички
-    models.OrderItemAutoMigrate()
     models.ProductAutoMigrate()
+    models.ProductTemplateAutoMigrate()
 }
 
 func main() {
@@ -52,8 +52,8 @@ func main() {
     mux := http.NewServeMux()
 
     mux.HandleFunc("/", indexHandler)
-    mux.HandleFunc("/createOrderItem", createOrderItemHandler)
     mux.HandleFunc("/createProduct", createProductHandler)
+    mux.HandleFunc("/createProductTemplate", createProductTemplateHandler)
 
     http.ListenAndServe(":"+port, mux)
 }
@@ -61,26 +61,26 @@ func main() {
 // Главная страница
 func indexHandler(w http.ResponseWriter, r *http.Request) {
     // Выводим список элементов заказа
-    orderItemList := models.OrderItemList()
+    productList := models.ProductList()
     w.Write([]byte("Список элементов заказа\r\n\r\n"))
-    for _, value := range orderItemList {
+    for _, value := range productList {
         w.Write([]byte(value.Title + "\r\n"))
     }
     
     // Выводим список продуктов
-    productList := models.ProductList()
+    productTemplateList := models.ProductTemplateList()
     w.Write([]byte("\r\nСписок типовых продуктов\r\n\r\n"))
-    for _, value := range productList {
+    for _, value := range productTemplateList {
         w.Write([]byte(value.Title + "\r\n"))
     }
 }
 
 // Создание элемента заказа
-func createOrderItemHandler(w http.ResponseWriter, r *http.Request) {
-    models.OrderItemCreate("1234")
+func createProductHandler(w http.ResponseWriter, r *http.Request) {
+    models.ProductCreate("1234")
 }
 
 // Создание типового продукта
-func createProductHandler(w http.ResponseWriter, r *http.Request) {
-    models.ProductCreate()
+func createProductTemplateHandler(w http.ResponseWriter, r *http.Request) {
+    models.ProductTemplateCreate()
 }
