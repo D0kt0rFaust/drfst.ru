@@ -1,6 +1,5 @@
 /*
-	Список типовых продуктов для заказа.
-	Будет использоваться для унификации заявок на покупку.
+	Элемент заказа
 */
 
 package models
@@ -19,7 +18,7 @@ type Product struct {
 
 // Переменные
 
-// var DB *gorm.DB
+var DB *gorm.DB
 
 var product Product
 var products []Product
@@ -33,9 +32,9 @@ func ProductAutoMigrate() {
 }
 
 // Добавление записи
-func ProductCreate() {
+func ProductCreate(title string) {
 	log.Println("ProductCreate")
-	entity := Product{Title: "Test"}
+	entity := Product{Title: title}
 	DB.Create(&entity)
 }
 

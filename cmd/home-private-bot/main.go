@@ -46,8 +46,8 @@ func init() {
     models.DB = DB
 
     // Мигрируем таблички
-    models.OrderItemAutoMigrate()
     models.ProductAutoMigrate()
+    models.ProductTemplateAutoMigrate()
 }
 
 func main() {
@@ -73,7 +73,7 @@ func main() {
 	        t := time.Now()
 
 			// Создаём элемент заказа
-			models.OrderItemCreate(update.Message.Text)
+			models.ProductCreate(update.Message.Text)
 
 	        welcomeMessage := "Привет, " +
 	            update.Message.Chat.FirstName +  " " +
