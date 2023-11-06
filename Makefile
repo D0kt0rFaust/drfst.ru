@@ -56,3 +56,9 @@ lde: hosts network build up
 re:
 	docker compose restart app-main
 	docker compose restart app-bot
+
+remain:
+	docker compose restart app-main
+
+rebot: 
+	docker compose restart app-bot
