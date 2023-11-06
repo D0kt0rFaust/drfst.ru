@@ -41,6 +41,7 @@ func init() {
     // Мигрируем таблички
     models.ProductAutoMigrate()
     models.ProductTemplateAutoMigrate()
+    models.UserAutoMigrate()
 }
 
 func main() {
@@ -62,16 +63,23 @@ func main() {
 func indexHandler(w http.ResponseWriter, r *http.Request) {
     // Выводим список элементов заказа
     productList := models.ProductList()
-    w.Write([]byte("Список элементов заказа\r\n\r\n"))
+    w.Write([]byte("### Список элементов заказа\r\n\r\n"))
     for _, value := range productList {
         w.Write([]byte(value.Title + "\r\n"))
     }
     
     // Выводим список продуктов
     productTemplateList := models.ProductTemplateList()
-    w.Write([]byte("\r\nСписок типовых продуктов\r\n\r\n"))
+    w.Write([]byte("\r\n### Список типовых продуктов\r\n\r\n"))
     for _, value := range productTemplateList {
         w.Write([]byte(value.Title + "\r\n"))
+    }
+
+    // Выводим список пользователей
+    userList := models.UserList()
+    w.Write([]byte("\r\n### Список пользователей\r\n\r\n"))
+    for _, value := range userList {
+        w.Write([]byte(value.Lastname + " " + value.Firstname + " " + "\r\n"))
     }
 }
 
